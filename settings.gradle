@@ -1,0 +1,3 @@
+rootProject.name = 'revolut-api'
+include 'revx-api-client'
+

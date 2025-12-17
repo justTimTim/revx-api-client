@@ -1,0 +1,60 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+}
+
+group = 'com.revx'
+version = '1.0.0'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+
+dependencies {
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    testImplementation platform("org.junit:junit-bom:5.10.2")
+    testImplementation "org.junit.jupiter:junit-jupiter"
+
+    testImplementation("org.mockito:mockito-core:5.21.0")
+    testImplementation("org.mockito:mockito-junit-jupiter:5.21.0")
+
+    testImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
+
+//    testImplementation platform('org.junit:junit-bom:5.10.2')
+//    testImplementation 'org.junit.jupiter:junit-jupiter'
+
+    implementation("com.squareup.retrofit2:retrofit:3.0.0")
+    implementation("com.squareup.retrofit2:converter-jackson:3.0.0")
+
+    implementation("org.projectlombok:lombok:1.18.42")
+    annotationProcessor("org.projectlombok:lombok:1.18.42")
+
+//    testImplementation("org.mockito:mockito-core:5.21.0")
+//    testImplementation("org.mockito:mockito-junit-jupiter:5.21.0")
+
+
+//    testImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
+    testAnnotationProcessor ("org.projectlombok:lombok:1.18.42")
+}
+
+test {
+    useJUnitPlatform()
+    modularity.inferModulePath = false
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs += ['-parameters']
+}
+
+
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+}
