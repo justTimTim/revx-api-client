@@ -41,25 +41,25 @@ implementation("com.revx:revx-api-client:1.0.0")
 ### Create client
 
 RevxClientFactory revxApi =
-        RevxClientFactory.newInstance(apiKey, secret);
+RevxClientFactory.newInstance(apiKey, secret);
 
 RevxApiRestClient restClient =
-        revxApi.newRestClient("https://revx.revolut.com");
+revxApi.newRestClient("https://revx.revolut.com");
 
 ---
 
 ### Examples
 
 Get balances:
-
+<pre> 
 Collection<Balance> balances = restClient.getBalances();
-
+ </pre>
 Get order book:
-
+<pre> 
 OrderBook orderBook = restClient.getOrderBook("LINK-USD");
-
+ </pre>
 Create limit order:
-
+<pre> 
 NewOrder newOrder = limitOrder(
         UUID.randomUUID().toString(),
         "BTC-USDT",
@@ -71,8 +71,9 @@ NewOrder newOrder = limitOrder(
                 null
         )
 );
-
 restClient.createOrder(newOrder);
+ </pre>
+
 
 ---
 
