@@ -1,5 +1,9 @@
 # revx-api-client
 
+> 🚧 **Development Status**  
+> This project is in an **early development stage** and is **not yet production-ready**.  
+> APIs, behavior, and structure may change.
+
 A Java client library for interacting with the Revolut X (RevX) API.
 Official API documentation:
 https://developer.revolut.com/docs/x-api/revolut-x-crypto-exchange-rest-api
