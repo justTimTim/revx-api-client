@@ -11,10 +11,7 @@ import com.revx.api.payload.response.market.Data;
 import com.revx.api.payload.response.market.Metadata;
 import com.revx.api.payload.response.market.OrderBook;
 import com.revx.api.payload.response.market.OrderBoorRecord;
-import com.revx.api.payload.response.order.ActiveOrders;
-import com.revx.api.payload.response.order.NewOrderData;
-import com.revx.api.payload.response.order.NewOrderResponse;
-import com.revx.api.payload.response.order.OrderInfo;
+import com.revx.api.payload.response.order.*;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
@@ -22,6 +19,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import retrofit2.Call;
+import retrofit2.Response;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import java.io.IOException;
@@ -123,7 +121,6 @@ class RevxRetrofitApiServiceTest {
         assertNull(response.body());
         assertNotNull(response.errorBody());
     }
-
 
 
     @Test
@@ -230,78 +227,78 @@ class RevxRetrofitApiServiceTest {
     @Test
     void getOrderBook_ShouldReturnOrderBook() throws IOException, InterruptedException {
         String jsonResponse = """
-        {
-          "data": {
-            "asks": [
-              {
-                "aid": "ETH",
-                "anm": "Ethereum",
-                "s": "SELL",
-                "p": "4600",
-                "pc": "USD",
-                "pn": "MONE",
-                "q": "17",
-                "qc": "ETH",
-                "qn": "UNIT",
-                "ve": "REVX",
-                "no": "3",
-                "ts": "CLOB",
-                "pdt": 3318215482991
-              },
-              {
-                "aid": "ETH",
-                "anm": "Ethereum",
-                "s": "SELL",
-                "p": "4555",
-                "pc": "USD",
-                "pn": "MONE",
-                "q": "2.1234",
-                "qc": "ETH",
-                "qn": "UNIT",
-                "ve": "REVX",
-                "no": "2",
-                "ts": "CLOB",
-                "pdt": 3318215482991
-              }
-            ],
-            "bids": [
-              {
-                "aid": "ETH",
-                "anm": "Ethereum",
-                "s": "BUYI",
-                "p": "4550",
-                "pc": "USD",
-                "pn": "MONE",
-                "q": "0.25",
-                "qc": "ETH",
-                "qn": "UNIT",
-                "ve": "REVX",
-                "no": "1",
-                "ts": "CLOB",
-                "pdt": 3318215482991
-              },
-              {
-                "aid": "ETH",
-                "anm": "Ethereum",
-                "s": "BUYI",
-                "p": "4500",
-                "pc": "USD",
-                "pn": "MONE",
-                "q": "24.42",
-                "qc": "ETH",
-                "qn": "UNIT",
-                "ve": "REVX",
-                "no": "5",
-                "ts": "CLOB",
-                "pdt": 3318215482991
-              }
-            ]
-          },
-          "metadata": {
-            "timestamp": 3318215482991
-          }
-        }
-        """;
+                {
+                  "data": {
+                    "asks": [
+                      {
+                        "aid": "ETH",
+                        "anm": "Ethereum",
+                        "s": "SELL",
+                        "p": "4600",
+                        "pc": "USD",
+                        "pn": "MONE",
+                        "q": "17",
+                        "qc": "ETH",
+                        "qn": "UNIT",
+                        "ve": "REVX",
+                        "no": "3",
+                        "ts": "CLOB",
+                        "pdt": 3318215482991
+                      },
+                      {
+                        "aid": "ETH",
+                        "anm": "Ethereum",
+                        "s": "SELL",
+                        "p": "4555",
+                        "pc": "USD",
+                        "pn": "MONE",
+                        "q": "2.1234",
+                        "qc": "ETH",
+                        "qn": "UNIT",
+                        "ve": "REVX",
+                        "no": "2",
+                        "ts": "CLOB",
+                        "pdt": 3318215482991
+                      }
+                    ],
+                    "bids": [
+                      {
+                        "aid": "ETH",
+                        "anm": "Ethereum",
+                        "s": "BUYI",
+                        "p": "4550",
+                        "pc": "USD",
+                        "pn": "MONE",
+                        "q": "0.25",
+                        "qc": "ETH",
+                        "qn": "UNIT",
+                        "ve": "REVX",
+                        "no": "1",
+                        "ts": "CLOB",
+                        "pdt": 3318215482991
+                      },
+                      {
+                        "aid": "ETH",
+                        "anm": "Ethereum",
+                        "s": "BUYI",
+                        "p": "4500",
+                        "pc": "USD",
+                        "pn": "MONE",
+                        "q": "24.42",
+                        "qc": "ETH",
+                        "qn": "UNIT",
+                        "ve": "REVX",
+                        "no": "5",
+                        "ts": "CLOB",
+                        "pdt": 3318215482991
+                      }
+                    ]
+                  },
+                  "metadata": {
+                    "timestamp": 3318215482991
+                  }
+                }
+                """;
 
         mockWebServer.enqueue(new MockResponse()
                 .setResponseCode(200)
@@ -390,16 +387,16 @@ class RevxRetrofitApiServiceTest {
     void createOrder_ShouldReturnOrderResponse() throws IOException, InterruptedException {
         // Given
         String jsonResponse = """
-        {
-          "data": [
-            {
-              "venue_order_id": "7a52e92e-8639-4fe1-abaa-68d3a2d5234b",
-              "client_order_id": "984a4d8a-2a9b-4950-822f-2a40037f02bd",
-              "state": "new"
-            }
-          ]
-        }
-        """;
+                {
+                  "data": [
+                    {
+                      "venue_order_id": "7a52e92e-8639-4fe1-abaa-68d3a2d5234b",
+                      "client_order_id": "984a4d8a-2a9b-4950-822f-2a40037f02bd",
+                      "state": "new"
+                    }
+                  ]
+                }
+                """;
 
         mockWebServer.enqueue(new MockResponse()
                 .setResponseCode(200)
@@ -513,9 +510,9 @@ class RevxRetrofitApiServiceTest {
         );
 
         // When
-        Call<ActiveOrders> responseCall = apiService.getActiveOrders(request.symbols(), request.orderStates(),
+        Call<Orders> responseCall = apiService.getActiveOrders(request.symbols(), request.orderStates(),
                 request.side(), request.cursor(), request.limit());
-        ActiveOrders response = responseCall.execute().body();
+        Orders response = responseCall.execute().body();
 
         // Then
         assertNotNull(response);
@@ -529,13 +526,13 @@ class RevxRetrofitApiServiceTest {
         assertEquals("984a4d8a-2a9b-4950-822f-2a40037f02bd", order1.clientOrderId());
         assertEquals("BTC/USD", order1.symbol());
         assertEquals(Side.BUY, order1.side());
-        assertEquals(Type.LIMIT, order1.type());
+        assertEquals(OrderType.LIMIT, order1.orderType());
         assertEquals("0.002", order1.quantity());
         assertEquals("0", order1.filledQuantity());
         assertEquals("0.002", order1.leavesQuantity());
         assertEquals("98745", order1.price());
         assertNull(order1.averageFillPrice());
-        assertEquals(Status.NEW, order1.status());
+        assertEquals(OrderState.NEW, order1.state());
         assertNull(order1.rejectReason());
         assertEquals("gtc", order1.timeInForce());
         assertEquals(List.of(ExecutionInstruction.ALLOW_TAKER), order1.executionInstructions());
@@ -548,13 +545,13 @@ class RevxRetrofitApiServiceTest {
         assertEquals("a95b5e9b-3c6c-4951-933g-3b50048g13ce", order2.clientOrderId());
         assertEquals("ETH/EUR", order2.symbol());
         assertEquals(Side.SELL, order2.side());
-        assertEquals(Type.MARKET, order2.type());
+        assertEquals(OrderType.MARKET, order2.orderType());
         assertEquals("1.5", order2.quantity());
         assertEquals("0.75", order2.filledQuantity());
         assertEquals("0.75", order2.leavesQuantity());
         assertEquals("2500", order2.price());
         assertEquals("2480", order2.averageFillPrice());
-        assertEquals(Status.PARTIALLY_FILLED, order2.status());
+        assertEquals(OrderState.PARTIALLY_FILLED, order2.state());
         assertNull(order2.rejectReason());
         assertEquals("gtc", order2.timeInForce());
         assertEquals(List.of(ExecutionInstruction.POST_ONLY), order2.executionInstructions());
@@ -584,14 +581,14 @@ class RevxRetrofitApiServiceTest {
     void getActiveOrders_EmptyResponse_ShouldHandleGracefully() throws IOException {
         // Given
         String jsonResponse = """
-        {
-          "data": [],
-          "metadata": {
-            "timestamp": 3318215482991,
-            "next_cursor": null
-          }
-        }
-        """;
+                {
+                  "data": [],
+                  "metadata": {
+                    "timestamp": 3318215482991,
+                    "next_cursor": null
+                  }
+                }
+                """;
 
         mockWebServer.enqueue(new MockResponse()
                 .setResponseCode(200)
@@ -600,9 +597,9 @@ class RevxRetrofitApiServiceTest {
         ActiveOrderRequest request = new ActiveOrderRequest(null, null, null, null, 10);
 
         // When
-        Call<ActiveOrders> responseCall = apiService.getActiveOrders(request.symbols(), request.orderStates(),
+        Call<Orders> responseCall = apiService.getActiveOrders(request.symbols(), request.orderStates(),
                 request.side(), request.cursor(), request.limit());
-        ActiveOrders response = responseCall.execute().body();
+        Orders response = responseCall.execute().body();
 
         // Then
         assertNotNull(response);
@@ -612,8 +609,141 @@ class RevxRetrofitApiServiceTest {
         assertNull(response.metadata().nextCursor());
     }
 
+    @Test
+    void getOrderById_ShouldReturnOrderDetails() throws IOException, InterruptedException {
+        // Given
+        UUID venueOrderId = UUID.fromString("7a52e92e-8639-4fe1-abaa-68d3a2d5234b");
+
+        String jsonResponse = """
+                {
+                  "data": {
+                    "id": "7a52e92e-8639-4fe1-abaa-68d3a2d5234b",
+                    "client_order_id": "984a4d8a-2a9b-4950-822f-2a40037f02bd",
+                    "symbol": "BTC/USD",
+                    "side": "buy",
+                    "type": "limit",
+                    "quantity": "0.002",
+                    "filled_quantity": "0",
+                    "leaves_quantity": "0.002",
+                    "price": "98745",
+                    "average_fill_price": "89794.51",
+                    "status": "new",
+                    "time_in_force": "gtc",
+                    "execution_instructions": [
+                      "allow_taker"
+                    ],
+                    "created_date": 3318215482991
+                  }
+                }
+                """;
+
+        mockWebServer.enqueue(new MockResponse()
+                .setResponseCode(200)
+                .setBody(jsonResponse)
+                .addHeader("Content-Type", "application/json"));
+
+        // When
+        Call<OrderByIdResponse> call = apiService.getOrderById(venueOrderId.toString());
+        OrderByIdResponse response = call.execute().body();
+
+        // Then
+        assertNotNull(response);
+        assertEquals(venueOrderId.toString(), response.data().id());
+
+        // Verify request path
+        RecordedRequest request = mockWebServer.takeRequest();
+        assertEquals("GET", request.getMethod());
+        assertEquals("/api/1.0/orders/7a52e92e-8639-4fe1-abaa-68d3a2d5234b", request.getPath());
+    }
 
 
+    @Test
+    void cancelOrder_ShouldReturn204NoContent() throws IOException, InterruptedException {
+        // Given
+        UUID venueOrderId = UUID.fromString("7a52e92e-8639-4fe1-abaa-68d3a2d5234b");
+
+        // 204 No Content - empty body
+        mockWebServer.enqueue(new MockResponse()
+                .setResponseCode(204)
+                .addHeader("Content-Type", "application/json"));
+
+        // When
+        Call<Void> call = apiService.cancelOrder(venueOrderId.toString());
+        Response<Void> response = call.execute();
+
+        // Then
+        assertTrue(response.isSuccessful());
+        assertEquals(204, response.code());
+        assertNull(response.body());
+
+        // Verify request
+        RecordedRequest request = mockWebServer.takeRequest();
+        assertEquals("DELETE", request.getMethod());
+        assertEquals("/api/1.0/orders/7a52e92e-8639-4fe1-abaa-68d3a2d5234b", request.getPath());
+    }
+
+    @Test
+    void getOrderFills_ShouldReturnTradeFills() throws IOException, InterruptedException {
+        // Given
+        UUID venueOrderId = UUID.fromString("7a52e92e-8639-4fe1-abaa-68d3a2d5234b");
+
+        String jsonResponse = """
+        {
+          "data": [
+            {
+              "tdt": 3318215482991,
+              "aid": "BTC",
+              "anm": "Bitcoin",
+              "p": "91686.16",
+              "pc": "USD",
+              "pn": "MONE",
+              "q": "24.90000000",
+              "qc": "BTC",
+              "qn": "UNIT",
+              "ve": "REVX",
+              "pdt": 3318215482991,
+              "vp": "REVX",
+              "tid": "ad3e8787ab623ba5a1dfea53819be6f9"
+            }
+          ]
+        }
+        """;
+
+        mockWebServer.enqueue(new MockResponse()
+                .setResponseCode(200)
+                .setBody(jsonResponse)
+                .addHeader("Content-Type", "application/json"));
+
+        // When
+        Call<FillsResponse> call = apiService.getOrderFills(venueOrderId.toString());
+        FillsResponse response = call.execute().body();
+
+        // Then
+        assertNotNull(response);
+        assertNotNull(response.data());
+        assertEquals(1, response.data().size());
+
+        // Verify fill data
+        FillData fill = response.data().get(0);
+        assertEquals(3318215482991L, fill.tdt());
+        assertEquals("BTC", fill.aid());
+        assertEquals("Bitcoin", fill.anm());
+        assertEquals("91686.16", fill.p());
+        assertEquals("USD", fill.pc());
+        assertEquals("MONE", fill.pn());
+        assertEquals("24.90000000", fill.q());
+        assertEquals("BTC", fill.qc());
+        assertEquals("UNIT", fill.qn());
+        assertEquals("REVX", fill.ve());
+        assertEquals(3318215482991L, fill.pdt());
+        assertEquals("REVX", fill.vp());
+        assertEquals("ad3e8787ab623ba5a1dfea53819be6f9", fill.tid());
+
+        // Verify request
+        RecordedRequest request = mockWebServer.takeRequest();
+        assertEquals("GET", request.getMethod());
+        assertEquals("/api/1.0/orders/fills/7a52e92e-8639-4fe1-abaa-68d3a2d5234b", request.getPath());
+    }
 
 
     private RevxRetrofitApiService createTestService(String baseUrl) {

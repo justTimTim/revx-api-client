@@ -4,13 +4,15 @@ package com.revx.api.impl;
 import com.revx.api.RevxApiRestClient;
 import com.revx.api.RevxRetrofitApiService;
 import com.revx.api.payload.request.order.ActiveOrderRequest;
+import com.revx.api.payload.request.order.HistoricalOrdersRequest;
 import com.revx.api.payload.request.order.NewOrder;
 import com.revx.api.payload.response.balance.Balance;
 import com.revx.api.payload.response.configuration.Currency;
 import com.revx.api.payload.response.configuration.Pair;
 import com.revx.api.payload.response.market.OrderBook;
-import com.revx.api.payload.response.order.ActiveOrders;
 import com.revx.api.payload.response.order.NewOrderResponse;
+import com.revx.api.payload.response.order.OrderInfo;
+import com.revx.api.payload.response.order.Orders;
 
 import java.util.Collection;
 import java.util.Map;
@@ -57,11 +59,32 @@ public class RevxApiRestClientImpl implements RevxApiRestClient {
     }
 
     @Override
-    public ActiveOrders getActiveOrders(ActiveOrderRequest request) {
+    public Orders getActiveOrders(ActiveOrderRequest request) {
         return executeSync(apiService.getActiveOrders(request.symbols(),
                 request.orderStates(),
                 request.side(),
                 request.cursor(),
                 request.limit()));
+    }
+
+    @Override
+    public Orders getHistoricalOrders(HistoricalOrdersRequest request) {
+        return executeSync(apiService.getHistoricalOrders(request.symbols(),
+                request.orderStates(),
+                request.orderTypes(),
+                request.startDate(),
+                request.endDate(),
+                request.cursor(),
+                request.limit()));
+    }
+
+    @Override
+    public OrderInfo getOrderById(String orderId) {
+        return executeSync(apiService.getOrderById(orderId)).data();
+    }
+
+    @Override
+    public void cancelOrder(String venueOrderId) {
+        executeSync(apiService.cancelOrder(venueOrderId));
     }
 }

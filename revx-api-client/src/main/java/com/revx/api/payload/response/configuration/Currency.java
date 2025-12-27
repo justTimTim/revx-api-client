@@ -1,5 +1,6 @@
 package com.revx.api.payload.response.configuration;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.math.BigDecimal;
@@ -21,6 +22,7 @@ import java.math.BigDecimal;
  * @param status    The status of the currency - indicates whether it is available for use
  *                  ("active" or "inactive").
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public record Currency(@JsonProperty("symbol") String symbol,
                        @JsonProperty("name") String name,
                        @JsonProperty("scale") Integer scale,
