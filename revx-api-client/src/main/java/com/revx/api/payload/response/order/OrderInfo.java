@@ -2,10 +2,7 @@ package com.revx.api.payload.response.order;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.revx.api.payload.enums.ExecutionInstruction;
-import com.revx.api.payload.enums.Side;
-import com.revx.api.payload.enums.Status;
-import com.revx.api.payload.enums.Type;
+import com.revx.api.payload.enums.*;
 
 import java.util.List;
 
@@ -17,7 +14,7 @@ import java.util.List;
  * @param clientOrderId         ID of the order assigned by the client when creating the order
  * @param symbol                Symbol of the asset for which this order has been created
  * @param side                  Side of the order. Indicates whether the order was to acquire (buy) or dispose of (sell) an asset
- * @param type                  Type of the order. A market order is executed immediately at the current market price.
+ * @param orderType                  Type of the order. A market order is executed immediately at the current market price.
  *                              A limit order is executed only if the asset reaches a specified price set by the trader
  * @param quantity              Quantity of the order, expressed in base currency
  * @param filledQuantity        Quantity of the order that has been filled. How much of the order has already been executed
@@ -26,8 +23,8 @@ import java.util.List;
  *                              For buy orders, it's the maximum price for the order; for sell orders, it's the minimum price
  * @param averageFillPrice      Quantity-weighted average fill price of the order.
  *                              The average price at which the order has been executed so far
- * @param status                Status of the order
- * @param rejectReason          Reason for rejecting the order, present only for status=rejected
+ * @param state                Status of the order
+ * @param rejectReason          Reason for rejecting the order, present only for state=rejected
  * @param timeInForce           Time in force of the order. Indicates how long the order should remain active
  * @param executionInstructions List of execution instructions for the order
  * @param createdDate           Timestamp in Unix epoch milliseconds when the order was created
@@ -37,13 +34,13 @@ public record OrderInfo(String id,
                         String clientOrderId,
                         String symbol,
                         Side side,
-                        Type type,
+                        OrderType orderType,
                         String quantity,
                         String filledQuantity,
                         String leavesQuantity,
                         String price,
                         String averageFillPrice,
-                        Status status,
+                        OrderState state,
                         String rejectReason,
                         String timeInForce,
                         List<ExecutionInstruction> executionInstructions,
@@ -72,13 +69,13 @@ public record OrderInfo(String id,
                 clientOrderId,
                 symbol,
                 Side.fromValue(side),
-                Type.fromValue(type),
+                OrderType.fromValue(type),
                 quantity,
                 filledQuantity,
                 leavesQuantity,
                 price,
                 averageFillPrice,
-                Status.fromValue(status),
+                OrderState.fromValue(status),
                 rejectReason,
                 timeInForce,
                 executionInstructions != null
