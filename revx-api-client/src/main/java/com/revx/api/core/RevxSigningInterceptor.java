@@ -2,6 +2,7 @@ package com.revx.api.core;
 
 import com.revx.api.exception.ApiInitializationException;
 import com.revx.api.exception.ApiRevxException;
+import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -39,7 +40,10 @@ public class RevxSigningInterceptor implements Interceptor {
 
         String timestamp = String.valueOf(System.currentTimeMillis());
         String method = original.method();
-        String path = original.url().encodedPath();
+        HttpUrl url = original.url();
+        String path = url.encodedPath();
+
+        String query = url.encodedQuery();
 
         String body = "";
         if (original.body() != null) {
@@ -48,8 +52,20 @@ public class RevxSigningInterceptor implements Interceptor {
             body = buffer.readUtf8();
         }
 
-        String message = timestamp + method + path + body;
-        String signature = sign(message);
+        StringBuilder sb = new StringBuilder();
+        sb.append(timestamp)
+                .append(method.toUpperCase())
+                .append(path);
+
+        if (query != null && !query.isEmpty()) {
+            sb.append(query);
+        }
+
+        if (!body.isEmpty()) {
+            sb.append(body);
+        }
+
+        String signature = sign(sb.toString());
 
         Request signed = original.newBuilder()
                 .addHeader("X-Revx-API-Key", apiKey)

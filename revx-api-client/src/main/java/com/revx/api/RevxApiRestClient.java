@@ -3,6 +3,7 @@ package com.revx.api;
 import com.revx.api.payload.request.order.ActiveOrderRequest;
 import com.revx.api.payload.request.order.HistoricalOrdersRequest;
 import com.revx.api.payload.request.order.NewOrder;
+import com.revx.api.payload.request.trade.AllTradesRequest;
 import com.revx.api.payload.response.balance.Balance;
 import com.revx.api.payload.response.configuration.Currency;
 import com.revx.api.payload.response.configuration.Pair;
@@ -10,6 +11,7 @@ import com.revx.api.payload.response.market.OrderBook;
 import com.revx.api.payload.response.order.NewOrderResponse;
 import com.revx.api.payload.response.order.OrderInfo;
 import com.revx.api.payload.response.order.Orders;
+import com.revx.api.payload.response.trade.TradesResponse;
 
 import java.util.Collection;
 import java.util.Map;
@@ -94,4 +96,11 @@ public interface RevxApiRestClient {
      * @param orderId Unique identifier (UUID) of the venue order.
      */
     void cancelOrder(String orderId);
+
+    /**
+     * Retrieve a list of all trades for a specific symbol, not limited to the current client's activity.
+     * @param request request params.
+     * @return The list of trades.
+     */
+    TradesResponse getAllTrades(AllTradesRequest request);
 }

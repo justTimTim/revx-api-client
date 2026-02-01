@@ -12,6 +12,8 @@ import com.revx.api.payload.response.market.Metadata;
 import com.revx.api.payload.response.market.OrderBook;
 import com.revx.api.payload.response.market.OrderBoorRecord;
 import com.revx.api.payload.response.order.*;
+import com.revx.api.payload.response.trade.TradeData;
+import com.revx.api.payload.response.trade.TradesResponse;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
@@ -743,6 +745,107 @@ class RevxRetrofitApiServiceTest {
         RecordedRequest request = mockWebServer.takeRequest();
         assertEquals("GET", request.getMethod());
         assertEquals("/api/1.0/orders/fills/7a52e92e-8639-4fe1-abaa-68d3a2d5234b", request.getPath());
+    }
+
+
+
+    @Test
+    void getAllTrades_ShouldReturnTradesForSymbol() throws IOException, InterruptedException {
+        String symbol = "BTC-USD";
+        Long startDate = 1672531200000L;
+        Long endDate = 1673136000000L;
+        String cursor = null;
+        Integer limit = 50;
+
+        String jsonResponse = """
+        {
+          "data": [
+            {
+              "tdt": 1672531300000,
+              "aid": "BTC",
+              "anm": "Bitcoin",
+              "p": "16542.50",
+              "pc": "USD",
+              "pn": "MONE",
+              "q": "0.5",
+              "qc": "BTC",
+              "qn": "UNIT",
+              "ve": "REVX",
+              "pdt": 1672531300000,
+              "vp": "REVX",
+              "tid": "trade_001"
+            },
+            {
+              "tdt": 1672531400000,
+              "aid": "BTC",
+              "anm": "Bitcoin",
+              "p": "16543.25",
+              "pc": "USD",
+              "pn": "MONE",
+              "q": "0.25",
+              "qc": "BTC",
+              "qn": "UNIT",
+              "ve": "REVX",
+              "pdt": 1672531400000,
+              "vp": "REVX",
+              "tid": "trade_002"
+            }
+          ],
+          "metadata": {
+            "timestamp": 1672531400000,
+            "next_cursor": "next_page_cursor_123"
+          }
+        }
+        """;
+
+        mockWebServer.enqueue(new MockResponse()
+                .setResponseCode(200)
+                .setBody(jsonResponse)
+                .addHeader("Content-Type", "application/json"));
+
+        // When
+        Call<TradesResponse> call = apiService.getAllTrades(
+                symbol, startDate, endDate, cursor, limit
+        );
+        TradesResponse response = call.execute().body();
+
+        // Then
+        assertNotNull(response);
+        assertNotNull(response.data());
+        assertEquals(2, response.data().size());
+
+        // Verify first trade
+        TradeData trade1 = response.data().get(0);
+        assertEquals(1672531300000L, trade1.tradeDateTime());
+        assertEquals("BTC", trade1.assetId());
+        assertEquals("Bitcoin", trade1.assetName());
+        assertEquals("16542.50", trade1.price());
+        assertEquals("USD", trade1.priceCurrency());
+        assertEquals("MONE", trade1.priceNotation());
+        assertEquals("0.5", trade1.quantity());
+        assertEquals("BTC", trade1.quantityCurrency());
+        assertEquals("UNIT", trade1.quantityNotation());
+        assertEquals("REVX", trade1.venueExecution());
+        assertEquals(1672531300000L, trade1.publicationDateTime());
+        assertEquals("REVX", trade1.venuePublication());
+        assertEquals("trade_001", trade1.transactionId());
+
+        // Verify metadata
+        assertNotNull(response.metadata());
+        assertEquals(1672531400000L, response.metadata().timestamp());
+        assertEquals("next_page_cursor_123", response.metadata().nextCursor());
+
+        // Verify request URL and parameters
+        RecordedRequest request = mockWebServer.takeRequest();
+        assertEquals("GET", request.getMethod());
+        assertEquals("/api/1.0/trades/all/BTC-USD?start_date=1672531200000&end_date=1673136000000&limit=50", request.getPath());
+
+        // Verify query parameters
+        assertTrue(request.getRequestUrl().toString().contains("start_date=1672531200000"));
+        assertTrue(request.getRequestUrl().toString().contains("end_date=1673136000000"));
+        assertTrue(request.getRequestUrl().toString().contains("limit=50"));
+        // cursor is null, so it shouldn't be in the URL
+        assertFalse(request.getRequestUrl().toString().contains("cursor="));
     }
 
 

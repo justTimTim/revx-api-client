@@ -6,6 +6,7 @@ import com.revx.api.RevxRetrofitApiService;
 import com.revx.api.payload.request.order.ActiveOrderRequest;
 import com.revx.api.payload.request.order.HistoricalOrdersRequest;
 import com.revx.api.payload.request.order.NewOrder;
+import com.revx.api.payload.request.trade.AllTradesRequest;
 import com.revx.api.payload.response.balance.Balance;
 import com.revx.api.payload.response.configuration.Currency;
 import com.revx.api.payload.response.configuration.Pair;
@@ -13,6 +14,7 @@ import com.revx.api.payload.response.market.OrderBook;
 import com.revx.api.payload.response.order.NewOrderResponse;
 import com.revx.api.payload.response.order.OrderInfo;
 import com.revx.api.payload.response.order.Orders;
+import com.revx.api.payload.response.trade.TradesResponse;
 
 import java.util.Collection;
 import java.util.Map;
@@ -86,5 +88,14 @@ public class RevxApiRestClientImpl implements RevxApiRestClient {
     @Override
     public void cancelOrder(String venueOrderId) {
         executeSync(apiService.cancelOrder(venueOrderId));
+    }
+
+    @Override
+    public TradesResponse getAllTrades(AllTradesRequest request) {
+        return executeSync(apiService.getAllTrades(request.symbol(),
+                request.startDate(),
+                request.endDate(),
+                request.cursor(),
+                request.limit()));
     }
 }
